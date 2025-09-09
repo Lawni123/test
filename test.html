@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tech Mahindra - Aptitude Practice (25 Questions)</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#00bcd4;--success:#22c55e}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; margin:0; background:linear-gradient(180deg,#071028 0%, #081226 100%); color:#e6eef6 }
+    body {
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Standard */
+}
+
+    .wrap{max-width:960px;margin:32px auto;padding:24px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;font-size:20px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    .meta{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px}
+    .question-area{margin-top:18px}
+    .question{font-weight:600;font-size:18px;margin-bottom:12px}
+    .options{display:grid;gap:10px}
+    .option{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:8px;cursor:pointer}
+    .option input{margin-right:10px}
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+    button{background:var(--accent);border:none;padding:10px 14px;border-radius:8px;color:#022; font-weight:600;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .progress{height:10px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#06b6d4,#7c3aed)}
+    footer{margin-top:20px;text-align:center;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.wrap{padding:16px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Candidate Info Form -->
+    <section class="card" id="infoCard">
+      <h2>Enter Your Details</h2>
+      <label>Name: <input type="text" id="candName" style="margin:6px;padding:6px;border-radius:6px"></label><br><br>
+      <label>Email: <input type="email" id="candEmail" style="margin:6px;padding:6px;border-radius:6px"></label><br><br>
+      <button onclick="startTest()">Start Test</button>
+    </section>
+
+    <!-- Aptitude Test Area -->
+    <section class="card question-area" id="app" style="display:none">
+      <div class="meta" style="justify-content:space-between">
+        <div>Question <strong id="qIndex">1</strong> of <strong id="qTotal">25</strong></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="progress" style="width:220px"><i id="bar" style="width:4%"></i></div>
+          <div id="timer">Time: <strong id="timeLeft">--:--</strong></div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="question" id="questionText">Loading question...</div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="controls">
+        <div>
+          <button class="secondary" id="prevBtn">◀ Previous</button>
+          <button class="secondary" id="nextBtn">Next ▶</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="markBtn" class="secondary">Mark for Review</button>
+          <button id="submitBtn">Submit Test</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>Made for practice — good luck!</footer>
+  </div>
+
+  <script>
+    // Candidate details
+    let candName="", candEmail="";
+    let tabSwitchCount = 0;
+
+    function startTest(){
+      candName = document.getElementById('candName').value.trim();
+      candEmail = document.getElementById('candEmail').value.trim();
+      if(!candName || !candEmail){ alert("Please enter name and email"); return; }
+      document.getElementById("infoCard").style.display="none";
+      document.getElementById("app").style.display="block";
+      render();
+    }
+
+    // 25 aptitude questions
+    const questions = [
+      {q:"If 5 machines take 5 minutes to make 5 units, how many minutes will 100 machines take to make 100 units?", opts:["5","20","100","25"], a:0},
+      {q:"Find the next number in the series: 2, 6, 12, 20, 30, ?", opts:["36","40","42","56"], a:2},
+      {q:"A train 200 m long passes a platform in 20 seconds at constant speed. How fast is the train?", opts:["36 km/h","30 km/h","72 km/h","54 km/h"], a:0},
+      {q:"If x+1/x = 5, find x^2 + 1/x^2.", opts:["23","25","19","21"], a:0},
+      {q:"Complete the analogy: BYTE is to KILOBYTE as ____ is to MEGABYTE.", opts:["KILOBYTE","GIGABYTE","TERABYTE","MEGABIT"], a:0},
+      {q:"A shopkeeper marks up goods by 40% then gives a discount of 20%. Net change percent?", opts:["12% increase","12% decrease","20% increase","8% increase"], a:0},
+      {q:"Which word is most nearly opposite in meaning to 'obdurate'?", opts:["Stubborn","Flexible","Hard-hearted","Intransigent"], a:1},
+      {q:"If the probability of A winning is 1/3 and B winning is 1/4, probability that neither wins?", opts:["5/12","7/12","2/3","11/12"], a:0},
+      {q:"Choose the odd one out: 2, 3, 5, 9, 11", opts:["2","3","5","9"], a:3},
+      {q:"If sum of two consecutive integers is 99, what are they?", opts:["49 and 50","50 and 49","48 and 51","None"], a:0},
+      {q:"What is 15% of 240?", opts:["36","30","24","18"], a:0},
+      {q:"Clock problem: What is the angle between hour and minute hands at 3:30?", opts:["75°","90°","45°","60°"], a:0},
+      {q:"Find greatest common divisor (GCD) of 84 and 126.", opts:["21","42","7","14"], a:1},
+      {q:"If A+B=10 and A-B=4, find A*B.", opts:["21","24","30","14"], a:0},
+      {q:"Logical: If all Bloops are Razzies and all Razzies are Zips, then all Bloops are definitely Zips?", opts:["True","False","Cannot say","Only sometimes"], a:0},
+      {q:"Arrange: Birth(1), Childhood(2), Marriage(3), Old age(4), Death(5). Choose the sequence.", opts:["1,2,3,4,5","2,1,3,4,5","1,3,2,4,5","2,3,1,4,5"], a:0},
+      {q:"If 3x - 2 = 10, what is x?", opts:["4","6","5","7"], a:0},
+      {q:"Ratio problem: A:B = 3:4. If A+B =56, find B.", opts:["24","32","28","30"], a:1},
+      {q:"Profit and loss: An item bought for 800 sold at 20% profit. What is selling price?", opts:["960","1000","840","920"], a:0},
+      {q:"Simple coding logic: Which data structure follows FIFO?", opts:["Stack","Queue","Tree","Graph"], a:1},
+      {q:"If 7 people shake hands with each other once, how many handshakes occur?", opts:["21","42","14","28"], a:0}
+    ];
+
+    const TOTAL = questions.length;
+    document.getElementById('qTotal').innerText = TOTAL;
+
+    let idx = 0;
+    const answers = new Array(TOTAL).fill(null);
+    const marked = new Set();
+
+    // Timer : total 30 minutes
+    let totalSeconds = 30*60;
+    const timeEl = document.getElementById('timeLeft');
+    function formatTime(s){
+      const mm = Math.floor(s/60).toString().padStart(2,'0');
+      const ss = (s%60).toString().padStart(2,'0');
+      return mm+':'+ss;
+    }
+    timeEl.innerText = formatTime(totalSeconds);
+    const timerInterval = setInterval(()=>{
+      totalSeconds--;
+      if(totalSeconds<0){ clearInterval(timerInterval); submitTest(); return; }
+      timeEl.innerText = formatTime(totalSeconds);
+    },1000);
+
+    function render(){
+      const q = questions[idx];
+      document.getElementById('qIndex').innerText = idx+1;
+      const bar = document.getElementById('bar');
+      bar.style.width = ((idx+1)/TOTAL*100) + '%';
+      document.getElementById('questionText').innerText = q.q;
+      const optDiv = document.getElementById('options');
+      optDiv.innerHTML = '';
+      q.opts.forEach((o,i)=>{
+        const id = 'opt-'+idx+'-'+i;
+        const el = document.createElement('label');
+        el.className = 'option';
+        el.innerHTML = `<input type="radio" name="q${idx}" value="${i}" id="${id}" ${answers[idx]===i? 'checked' : ''}> <span>${String.fromCharCode(65+i)}. ${o}</span>`;
+        el.addEventListener('click', ()=>{ answers[idx] = i; });
+        optDiv.appendChild(el);
+      });
+      document.getElementById('markBtn').innerText = marked.has(idx)? 'Unmark' : 'Mark for Review';
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', ()=>{ if(idx<TOTAL-1){ idx++; render(); } });
+    document.getElementById('prevBtn').addEventListener('click', ()=>{ if(idx>0){ idx--; render(); } });
+    document.getElementById('markBtn').addEventListener('click', ()=>{ if(marked.has(idx)) marked.delete(idx); else marked.add(idx); render(); });
+    document.getElementById('submitBtn').addEventListener('click', ()=>{ if(confirm('Are you sure you want to submit the test?')) submitTest(); });
+
+    function submitTest(){
+      clearInterval(timerInterval);
+
+      let correct = 0;
+      questions.forEach((q,i)=>{ if(answers[i]===q.a) correct++; });
+      document.addEventListener("visibilitychange", function() {
+  if (document.hidden) {
+    tabSwitchCount++;
+    console.log("Tab switched! Count = " + tabSwitchCount);
+  }
+});
+
+      // --- Send Data to Google Form ---
+      const formURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfeni5zwRNKn4s7e3NkL7lTfISjd5CtLuQojAvVfApJy_O1LQ/formResponse"; // Replace with your Google Form URL
+      const data = new FormData();
+      data.append("entry.482892704", candName);  // Replace with your Name field entry ID
+      data.append("entry.773974027", candEmail); // Replace with your Email field entry ID
+      data.append("entry.201814346", correct + "/" + TOTAL); // Replace with your Marks field entry ID
+      data.append("entry.640019157", tabSwitchCount); // Replace with your Tab Switch field ID
+
+      fetch(formURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      }).then(()=>{
+        alert("✅ Your test has been submitted successfully!");
+        location.reload(); // restart for next user
+      });
+
+      document.getElementById('nextBtn').disabled = true;
+      document.getElementById('prevBtn').disabled = true;
+      document.getElementById('markBtn').disabled = true;
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('options').querySelectorAll('label').forEach(l=>l.style.pointerEvents='none');
+
+      // Disable right-click
+document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+// Disable copy, cut, paste
+document.addEventListener("copy", (e) => e.preventDefault());
+document.addEventListener("cut", (e) => e.preventDefault());
+document.addEventListener("paste", (e) => e.preventDefault());
+
+// Disable keyboard shortcuts like Ctrl+C, Ctrl+U, Ctrl+Shift+I (inspect)
+document.addEventListener("keydown", function(e) {
+  if (
+    (e.ctrlKey && (e.key === "c" || e.key === "u" || e.key === "x" || e.key === "v")) || 
+    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J"))
+  ) {
+    e.preventDefault();
+    alert("⚠️ Copying or inspecting is disabled during the test!");
+  }
+});
+
+    }
+
+    // initial render (only after StartTest is clicked)
+  </script>
+</body>
+</html>
